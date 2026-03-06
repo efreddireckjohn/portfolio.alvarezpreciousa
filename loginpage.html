@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Login & Signup</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+
+.container{
+    width:100%;
+    max-width:400px;
+    background:rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius:25px;
+    padding:40px 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.container::before {
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 70%);
+    top:-50%;
+    left:-50%;
+    transform: rotate(45deg);
+    pointer-events:none;
+    animation: moveGradient 10s linear infinite;
+}
+
+@keyframes moveGradient{
+    0%{transform: rotate(0deg) translate(0,0);}
+    50%{transform: rotate(45deg) translate(10px,10px);}
+    100%{transform: rotate(0deg) translate(0,0);}
+}
+
+h2{
+    text-align:center;
+    margin-bottom:10px;
+    font-size:26px;
+    color:#fff;
+    letter-spacing:1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+p{
+    text-align:center;
+    font-size:14px;
+    margin-bottom:25px;
+    opacity:0.8;
+    color:#d0d0d0;
+}
+
+.input-group{
+    margin-bottom:18px;
+    position:relative;
+}
+
+label{
+    display:block;
+    margin-bottom:5px;
+    font-size:13px;
+    color:#ccc;
+}
+
+input{
+    width:100%;
+    padding:12px 45px 12px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.2);
+    outline:none;
+    background: rgba(255,255,255,0.05);
+    color:#fff;
+    font-size:14px;
+    transition: all 0.3s ease;
+}
+
+input::placeholder{
+    color: rgba(255,255,255,0.6);
+}
+
+input:focus{
+    border-color:#00f5ff;
+    box-shadow: 0 0 12px rgba(0,245,255,0.3);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(135deg,#00f5ff,#00c3cc);
+    font-weight:bold;
+    cursor:pointer;
+    font-size:15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,255,255,0.3);
+}
+
+button:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0,255,255,0.5);
+    opacity:0.95;
+}
+
+.toggle{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform: translateY(-50%);
+    cursor:pointer;
+    font-size:13px;
+    color:#00f5ff;
+    font-weight:500;
+}
+
+.links{
+    margin-top:20px;
+    text-align:center;
+    font-size:13px;
+}
+
+.links a{
+    color:#00f5ff;
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:500;
+    transition: all 0.3s ease;
+}
+
+.links a:hover{
+    text-decoration:underline;
+    color:#00c3cc;
+}
+
+.message{
+    margin-top:15px;
+    text-align:center;
+    font-size:13px;
+}
+
+.success{color:#22c55e;}
+.error{color:#ff4d4d;}
+
+.hidden{
+    display:none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform: translateY(10px);}
+    to{opacity:1; transform: translateY(0);}
+}
+
+/* Forgot Password Modal */
+.modal-bg{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+    display:none;
+}
+
+.modal{
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    padding:25px 20px;
+    border-radius:20px;
+    width:300px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.modal h3{
+    margin-bottom:15px;
+    font-size:20px;
+    color:#fff;
+}
+
+.modal input{
+    margin-bottom:15px;
+}
+
+.modal button{
+    margin-bottom:10px;
+}
+
+.modal .links{
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div id="loginSection">
+<h2>Log In</h2>
+<p>Please login to continue</p>
+
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="loginEmail" required>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="loginPassword" required>
+<span class="toggle" onclick="togglePassword('loginPassword')">Show</span>
+</div>
+
+<button onclick="login()">Sign In</button>
+
+<div class="links">
+<a onclick="showSignup()">Don't have an account? Sign Up</a> | 
+<a onclick="showForgotModal()">Forgot Password?</a>
+</div>
+
+<div class="message" id="loginMsg"></div>
+</div>
+
+<!-- SIGNUP -->
+<div id="signupSection" class="hidden">
+<h2>Create Account</h2>
+<p>Register to get started</p>
+
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="signupEmail" required>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="signupPassword" required>
+<span class="toggle" onclick="togglePassword('signupPassword')">Show</span>
+</div>
+
+<button onclick="signup()">Create Account</button>
+
+<div class="links">
+<a onclick="showLogin()">Back to Login</a>
+</div>
+
+<div class="message" id="signupMsg"></div>
+</div>
+
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-bg" id="forgotModal">
+<div class="modal">
+<h3>Reset Password</h3>
+<input type="email" id="forgotEmail" placeholder="Enter your registered email">
+<input type="password" id="forgotNewPassword" placeholder="Enter new password">
+<button onclick="resetPassword()">Reset Password</button>
+<div class="links">
+<a onclick="closeForgotModal()">Cancel</a> | 
+<a onclick="showSignup();closeForgotModal();">No account? Sign Up</a>
+</div>
+</div>
+</div>
+
+<script>
+function togglePassword(id){
+    const input=document.getElementById(id);
+    input.type=input.type==="password"?"text":"password";
+}
+
+function showSignup(){
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("signupSection").classList.remove("hidden");
+}
+
+function showLogin(){
+    document.getElementById("signupSection").classList.add("hidden");
+    document.getElementById("loginSection").classList.remove("hidden");
+}
+
+// Signup & Login functions
+function signup(){
+    const email=document.getElementById("signupEmail").value.trim();
+    const password=document.getElementById("signupPassword").value.trim();
+    const msg=document.getElementById("signupMsg");
+
+    msg.textContent="";
+    msg.className="message";
+
+    if(!email||!password){
+        msg.textContent="Please fill all fields.";
+        msg.classList.add("error");
+        return;
+    }
+
+    localStorage.setItem("userEmail",email);
+    localStorage.setItem("userPassword",password);
+
+    msg.textContent="Account created successfully!";
+    msg.classList.add("success");
+
+    setTimeout(showLogin,1500);
+}
+
+function login(){
+    const email=document.getElementById("loginEmail").value.trim();
+    const password=document.getElementById("loginPassword").value.trim();
+    const msg=document.getElementById("loginMsg");
+
+    msg.textContent="";
+    msg.className="message";
+
+    const savedEmail=localStorage.getItem("userEmail");
+    const savedPassword=localStorage.getItem("userPassword");
+
+    if(email===savedEmail && password===savedPassword){
+        msg.textContent="Login successful!";
+        msg.classList.add("success");
+    }else{
+        msg.textContent="Invalid email or password.";
+        msg.classList.add("error");
+    }
+}
+
+// Show/hide Forgot Password Modal
+function showForgotModal(){
+    document.getElementById("forgotModal").style.display="flex";
+}
+
+function closeForgotModal(){
+    document.getElementById("forgotModal").style.display="none";
+}
+
+// Reset password
+function resetPassword(){
+    const savedEmail = localStorage.getItem("userEmail");
+    const emailInput = document.getElementById("forgotEmail").value.trim();
+    const newPassword = document.getElementById("forgotNewPassword").value.trim();
+
+    if(!savedEmail){
+        alert("No account found. Please create an account first.");
+        return;
+    }
+
+    if(emailInput !== savedEmail){
+        alert("Email does not match our records.");
+        return;
+    }
+
+    if(!newPassword || newPassword.length < 6){
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+
+    localStorage.setItem("userPassword", newPassword);
+    alert("Password reset successfully! You can now login with your new password.");
+    closeForgotModal();
+}
+</script>
+
+</body>
+</html>
